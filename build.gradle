@@ -13,6 +13,12 @@ java {
 	}
 }
 
+tasks.named('bootJar') {
+	archiveBaseName.set('backend')
+	archiveVersion.set('0.0.1')
+	mainClass.set('com.corkboard.backend.BackendApplication') // Ensure this is correct
+}
+
 repositories {
 	mavenCentral()
 }

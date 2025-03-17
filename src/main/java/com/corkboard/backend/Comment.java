@@ -4,34 +4,31 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "posts")
-public class Post {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String username;
 
-    @Column(nullable = false, length=100)
-    private String title;
-
-    @Column(nullable = false, length=500)
+    @Column(nullable = false, length = 500)
     private String content;
-
-    private String filePath;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public Post() {
+    @Column(name = "post_id", nullable = false)
+    private int postId;  // Reference to the Post this comment belongs to
+
+    public Comment() {
     }
 
-    public Post(String title, String content, String username, String filePath, LocalDateTime now) {
-        this.title = title;
+    public Comment(String content, String username, LocalDateTime createdAt, int postId) {
         this.content = content;
         this.username = username;
-        this.filePath = filePath;
-        this.createdAt = now;
+        this.createdAt = createdAt;
+        this.postId = postId;
     }
 
     public Long getId() {
@@ -58,19 +55,19 @@ public class Post {
         this.content = content;
     }
 
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getPostId() {
+        return postId;
+    }
+
+    public void setPostId(int postId) {
+        this.postId = postId;
     }
 }

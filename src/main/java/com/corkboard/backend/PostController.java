@@ -15,10 +15,12 @@ import java.util.List;
 public class PostController {
 
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final LogService logService;
 
-    public PostController(PostRepository postRepository, LogService logService) {
+    public PostController(PostRepository postRepository, CommentRepository commentRepository, LogService logService) {
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
         this.logService = logService;
     }
 
@@ -28,8 +30,21 @@ public class PostController {
         return postRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public Post getPostById(@PathVariable Long id, HttpServletRequest request) {
+        logGetRequest(request);
+        return postRepository.findById(id).orElse(null);
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<Comment> getCommentsByPostId(@PathVariable Long id, HttpServletRequest request) {
+        logGetRequest(request);
+        return commentRepository.findByPostId(id);
+    }
+
     @PostMapping
-    public Post createPost(@RequestParam("content") String content,
+    public Post createPost(@RequestParam("title") String title,
+                           @RequestParam("content") String content,
                            @RequestParam("username") String username,
                            @RequestParam(value = "file", required = false) MultipartFile file,
                            HttpServletRequest request) throws IOException {
@@ -42,7 +57,7 @@ public class PostController {
             filePath = null;
         }
 
-        Post post = new Post(content, username, filePath, LocalDateTime.now());
+        Post post = new Post(title, content, username, filePath, LocalDateTime.now());
         return postRepository.save(post);
     }
 
